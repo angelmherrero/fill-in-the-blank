@@ -25,19 +25,18 @@
 # In the Mad Libs generator, you take a paragraph and replace all instances of NOUN and VERB.
 # How can you adapt that design to work with numbered blanks?
 
-
 #defining the paragraphs and their solution per each diffculty level
 
-difficult_sample = '''___3___ based on automatically ___1___ the rules can be made more accurate simply 
-by supplying more input ___2___. However, ___3___ based on hand-written rules can only be made more accurate 
+difficult_sample = '''___1___ based on automatically ___2___ the rules can be made more accurate simply        
+by supplying more input ___3___ . However, ___1___ based on hand-written rules can only be made more accurate 
 by increasing the complexity of the rules, which is a much more difficult task. In particular, there is a 
-limit to the complexity of ___3___ based on hand-crafted rules, beyond which the ___3___ become more and 
+limit to the complexity of ___1___ based on hand-crafted rules, beyond which the ___1___ become more and 
 more unmanageable. .'''
 
-normal_sample = '''There are two different phases of ___2___ ___1___: how an ___2___ ___3___ relies on 
+normal_sample = '''There are two different phases of ___1___ ___2___ : how an ___1___ ___3___ relies on 
 planning and control, localization, and  feature vectors to get from a starting location to a destination. 
-Two examples: an ___2___ ___3___ trial in Singapore and the potential impact of driverless taxis in 
-New York City. Parallel autonomy is when a ___1___ corrects a driver's errors by making small adjustments, 
+Two examples: an ___1___ ___3___ trial in Singapore and the potential impact of driverless taxis in 
+New York City. Parallel autonomy is when a ___2___ corrects a driver's errors by making small adjustments, 
 such as turning the wheel to ensure safety. '''
 
 easy_sample = '''Artificial ___1___ (___2___, also ___3___ ___1___, is ___1___ displayed by ___3___s, in 
@@ -46,78 +45,74 @@ is defined as the study of "intelligent agents": any device that perceives its e
 takes actions that maximize its chance of success at some goal.'''
 
 difficult_sample_result = ["systems", "learning", "data"]
-normal_sample_result = ["systems", "autonomous", "vehicle"]
+normal_sample_result = ["autonomous", "systems", "vehicle"]
 easy_sample_result = ["intelligence", "AI", "machine"]
 
 #the player chooses the level of difficulty 
-level_of_difficulty = raw_input("Choose and type easy, normal or difficult")
 
-def sample(level_of_difficulty):
-	if level_of_difficulty == difficult:
-		return difficult_sample
-		if level_of_difficulty == normal:
-			return normal_sample
-		else: 
-			return easy_sample
+level_of_difficulty = raw_input("Type difficulty level: easy, normal or difficult:")
+#level_of_difficulty = "difficult"
 
-def sample_result(level_of_difficulty):
-	if level_of_difficulty == difficult:
-		return difficult_sample_result
-		if level_of_difficulty == normal:
-			return normal_sample_result
-		else: 
-			return easy_sample_result
+if level_of_difficulty == "difficult":
+	sample = difficult_sample
+if level_of_difficulty == "normal":
+	sample = normal_sample
+if level_of_difficulty == "easy": 
+	sample = easy_sample
+
+if level_of_difficulty == "difficult":
+	sample_result = difficult_sample_result
+if level_of_difficulty == "normal":
+	sample_result = normal_sample_result
+if level_of_difficulty == "easy":
+	sample_result == easy_sample_result
+
+print sample
 print sample_result
 
 # How many blanks have to be filled and defining a vector with the words in the blanks to be replaced. Assuming only one word per blank.		
-list_of_words = sample.split(",")
+list_of_words = sample.split()
 blank = []
 number_of_blanks = 0
-index=0
+index = 0
 
 while index<len(list_of_words):
-	if list_of_words[index] in ["___1___" ,"___2___", "___3___", "___4___"]:
-		blank = blank.append (list_of_words [index]) 
+	if list_of_words[index] in ["___1___" ,"___2___","___3___","___4___"]:
 		number_of_blanks = number_of_blanks + 1
+		blank.append(list_of_words[index])
 	index=index+1
 
-#Replacing the words in the blanks for the answers  
+def onlyoneblanks(blank):
+  output = []
+  for x in blank:
+    if x not in output:
+      output.append(x)
+  return output
 
+uniqueblankvector= onlyoneblanks(blank)
+uniqueblanks = len(list(set(blank)))
+
+#Replacing the words in the blanks for the answers  
 def word_in_pos(word,blank):
 	for pos in blank:
 		if pos in word:
 			return pos
 	return None
 
-def play_game(sample,blank):
+def play_game(sample,uniqueblankvector):
 	replaced = []
 	list_of_words = sample.split()
-	for word in list_of_words:
-		replacement = word_in_pos(word,blank)
-		if replacement  != None:
-			user_input = raw_input ("Type in your fill-the-blabk word" + replacement + " ")
-			if sample_result == user_input:
-				word = word.replace(replacement, user_input)
-				replaced.append(word)
-		else:
-			replaced.append(word)
-	replaced=" ".join(replaced)
-	return replaced
+	i = 1
+	while i <= uniqueblanks:
+		for word in uniqueblankvector:
+			replacement = word_in_pos(word,list_of_words)
+			if replacement  != None:
+				user_input = raw_input ("Type in your fill-the-blabk word" + replacement + " ")
+				sample = sample.replace(replacement,user_input)
+				i=i+1
+		return sample
 
-
-
-
-# Creating a vector with the player responses
-#player_response = []
-#filled_blanks = []
-#n = 1
-#while n<number_of_blanks:
-#	filled_blanks [n] = raw_input ("Write your word here: ")
-#	player_response [] = player_response.append (filled_blanks[n])
-##and modifying list created from sample
-#	if sample_result[] == player_response[]:
-#		list_of_words[n[n][1]]= player_response[n]
-#finalparagraph = "".join(list_of_words)
+print play_game(sample,uniqueblankvector)
 
 
 
