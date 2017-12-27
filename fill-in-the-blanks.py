@@ -1,34 +1,9 @@
 # IPND Stage 2 Final Project
 
-# You've built a Mad-Libs game with some help from Sean.
-# Now you'll work on your own game to practice your skills and demonstrate what you've learned.
-
-# For this project, you'll be building a Fill-in-the-Blanks quiz.
-# Your quiz will prompt a user with a paragraph containing several blanks.
-# The user should then be asked to fill in each blank appropriately to complete the paragraph.
-# This can be used as a study tool to help you remember important vocabulary!
-
-# Note: Your game will have to accept user input so, like the Mad Libs generator,
-# you won't be able to run it using Sublime's `Build` feature.
-# Instead you'll need to run the program in Terminal or IDLE.
-# Refer to Work Session 5 if you need a refresher on how to do this.
-
-# Your game should consist of 3 or more levels, so you should add your own paragraphs as well!
-
-# We've also given you a file called fill-in-the-blanks.pyc which is a working version of the project.
-# A .pyc file is a Python file that has been translated into "byte code".
-# This means the code will run the same as the original .py file, but when you open it
-# it won't look like Python code! But you can run it just like a regular Python file
-# to see how your code should behave.
-
-# Hint: It might help to think about how this project relates to the Mad Libs generator you built with Sean.
-# In the Mad Libs generator, you take a paragraph and replace all instances of NOUN and VERB.
-# How can you adapt that design to work with numbered blanks?
-
 #defining the paragraphs and their solution per each diffculty level
 
-difficult_sample = '''___1___ based on automatically ___2___ the rules can be made more accurate simply        
-by supplying more input ___3___ . However, ___1___ based on hand-written rules can only be made more accurate 
+difficult_sample = '''___1___ based on automatically ___2___ the rules can be more accurate simply by 
+supplying more input ___3___ . However, ___1___ based on hand-written rules can only be made more accurate 
 by increasing the complexity of the rules, which is a much more difficult task. In particular, there is a 
 limit to the complexity of ___1___ based on hand-crafted rules, beyond which the ___1___ become more and 
 more unmanageable. .'''
@@ -36,12 +11,12 @@ more unmanageable. .'''
 normal_sample = '''There are two different phases of ___1___ ___2___ : how an ___1___ ___3___ relies on 
 planning and control, localization, and  feature vectors to get from a starting location to a destination. 
 Two examples: an ___1___ ___3___ trial in Singapore and the potential impact of driverless taxis in 
-New York City. Parallel autonomy is when a ___2___ corrects a driver's errors by making small adjustments, 
-such as turning the wheel to ensure safety. '''
+New York  City. Parallel autonomy is when a ___2___ corrects a driver´s errors by making small adjustments,        
+such as turning the wheeel to ensure safety. '''
 
 easy_sample = '''Artificial ___1___ (___2___, also ___3___ ___1___, is ___1___ displayed by ___3___s, in 
 contrast with the natural ___1___ displayed by humans and other animals. In computer science ___2___ research 
-is defined as the study of "intelligent agents": any device that perceives its environment and 
+is defined  as the study of "intelligent agents": any device that perceives its environment and 
 takes actions that maximize its chance of success at some goal.'''
 
 difficult_sample_result = ["systems", "learning", "data"]
@@ -51,7 +26,6 @@ easy_sample_result = ["intelligence", "AI", "machine"]
 #the player chooses the level of difficulty 
 
 level_of_difficulty = raw_input("Type difficulty level: easy, normal or difficult:")
-#level_of_difficulty = "difficult"
 
 if level_of_difficulty == "difficult":
 	sample = difficult_sample
@@ -65,12 +39,14 @@ if level_of_difficulty == "difficult":
 if level_of_difficulty == "normal":
 	sample_result = normal_sample_result
 if level_of_difficulty == "easy":
-	sample_result == easy_sample_result
+	sample_result = easy_sample_result
 
+print
+print "The paragraph where you have to fill the blanks is"
+print
 print sample
-print sample_result
 
-# How many blanks have to be filled and defining a vector with the words in the blanks to be replaced. Assuming only one word per blank.		
+# How many blanks have to be filled and defining a vector (blank) with the words in the blanks to be replaced. Assuming only one word per blank.		
 list_of_words = sample.split()
 blank = []
 number_of_blanks = 0
@@ -82,6 +58,7 @@ while index<len(list_of_words):
 		blank.append(list_of_words[index])
 	index=index+1
 
+#Eliminating repetitions from the vector and creating a new one without repetitions and ordered by the number in the blank (uniqueblankvector) 
 def onlyoneblanks(blank):
   output = []
   for x in blank:
@@ -89,10 +66,11 @@ def onlyoneblanks(blank):
       output.append(x)
   return output
 
-uniqueblankvector= onlyoneblanks(blank)
+uniqueblankvector= sorted (onlyoneblanks(blank))
 uniqueblanks = len(list(set(blank)))
 
-#Replacing the words in the blanks for the answers  
+#Replacing the words in the blanks for the answers. 
+#As some words filled several blanks  we check where in the paragraph the blanks with the same word can be located to replace all of them simultaneously  
 def word_in_pos(word,blank):
 	for pos in blank:
 		if pos in word:
@@ -103,16 +81,42 @@ def play_game(sample,uniqueblankvector):
 	replaced = []
 	list_of_words = sample.split()
 	i = 1
+	k = 1
+#defining number of attempts per word
+	maximum_number_of_attempts = 5
+	remaining_attempts = maximum_number_of_attempts
 	while i <= uniqueblanks:
 		for word in uniqueblankvector:
+			remaining_attempts = maximum_number_of_attempts	
+			k = k + 1		
 			replacement = word_in_pos(word,list_of_words)
-			if replacement  != None:
-				user_input = raw_input ("Type in your fill-the-blabk word" + replacement + " ")
-				sample = sample.replace(replacement,user_input)
-				i=i+1
-		return sample
-
+			if replacement != None:
+#now the player will be prompted to play each word at a time
+				user_input = raw_input ("Type in your fill-the-blank word" + replacement + " ")
+				while user_input != sample_result[i-1]: 
+					if k == maximum_number_of_attempts:
+#when the player has used all the attemps he will get a Game Over message
+						print
+						print "Game Over. You exhausted your ", maximum_number_of_attempts,  " attempts"
+						print "The solution for your choosen level_of_difficulty _was ", sample_result
+						return "Choose a diffenrent difficulty level and Play Again"
+					else:
+						remaining_attempts = remaining_attempts -1
+						print
+						print "try again, you still have ", remaining_attempts, " attempts" 
+						user_input = raw_input ("Type in your fill-in-the-blank word" + replacement + " ")
+				print
+				print "The word is correct"
+				print
+			sample = sample.replace(replacement,user_input)
+			i=i+1
+	return sample
+print
 print play_game(sample,uniqueblankvector)
+print
+print "Everything correct"
+print
+print "The right solution is ", sample_result, "as you have typed"
 
 
 
