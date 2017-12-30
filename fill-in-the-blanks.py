@@ -1,6 +1,9 @@
+#-*- coding: utf-8 -*-
+
 # IPND Stage 2 Final Project
 
 #defining the paragraphs and their solution per each diffculty level
+
 
 difficult_sample = '''___1___ based on automatically ___2___ the rules can be more accurate simply by 
 supplying more input ___3___ . However, ___1___ based on hand-written rules can only be made more accurate 
